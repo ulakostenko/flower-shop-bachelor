@@ -1,0 +1,18 @@
+# IDE-файли IntelliJ IDEA
+.idea/
+*.iml
+
+# Загальні службові файли
+*.log
+*.env
+node_modules/
+vendor/
+
+# WordPress специфічне
+wp-config.php
+wp-content/uploads/
+wp-content/cache/
+
+# OS системні файли
+.DS_Store
+Thumbs.db
