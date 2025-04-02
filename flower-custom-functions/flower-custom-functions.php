@@ -1,33 +1,42 @@
 <?php
 /**
+ * @package Wordpress_Custom_Plugin
  * Plugin Name: Flower Shop – Custom Functions
  * Description: Кастомні функції для інтернет-магазину квітів.
  * Version: 1.0
  * Author: Костенко Юлія
  */
 
-// === Таймер до кінця акції ===
-function custom_sale_countdown_timer($atts) {
-    $atts = shortcode_atts([
-        'end_date' => '',
-    ], $atts);
+/**
+ * Таймер до кінця акції
+ *
+ * @param $atts
+ * @return false|string
+ */
+function custom_sale_countdown_timer($atts)
+{
+	$atts = shortcode_atts([
+		'end_date' => '',
+	], $atts);
 
-    if (!$atts['end_date']) {
-        return '<p>Кінцева дата акції не вказана.</p>';
-    }
+	if (!$atts['end_date']) {
+		return '<p>Кінцева дата акції не вказана.</p>';
+	}
 
-    ob_start(); ?>
+
+	ob_start(); ?>
     <div id="svg-timer" data-end-date="<?php echo esc_attr($atts['end_date']); ?>">
-        <?php foreach (['days' => 'Дні', 'hours' => 'Години', 'minutes' => 'Хвилини', 'seconds' => 'Секунди'] as $unit => $label): ?>
+		<?php foreach (['days' => 'Дні', 'hours' => 'Години', 'minutes' => 'Хвилини', 'seconds' => 'Секунди'] as $unit => $label): ?>
             <div class="circle-box">
                 <svg width="180" height="180">
-                    <circle class="bg" cx="90" cy="90" r="80" />
-                    <circle class="progress" id="circle-<?php echo $unit ?>" cx="90" cy="90" r="80" />
+                    <circle class="bg" cx="90" cy="90" r="80"/>
+                    <circle class="progress" id="circle-<?php echo $unit ?>" cx="90" cy="90" r="80"/>
                 </svg>
                 <div class="number" id="<?php echo $unit ?>">00</div>
                 <div class="label"><?php echo $label ?></div>
             </div>
-        <?php endforeach; ?>
+		<?php endforeach; ?>
+
     </div>
     <style>
         #svg-timer {
@@ -38,20 +47,24 @@ function custom_sale_countdown_timer($atts) {
             flex-wrap: wrap;
             transform: scale(1.3); /* ~3x */
         }
+
         .circle-box {
             position: relative;
             width: 180px;
             height: 180px;
             text-align: center;
         }
+
         svg {
             transform: rotate(-90deg);
         }
+
         circle.bg {
             fill: none;
             stroke: #FCEEF5;
             stroke-width: 10;
         }
+
         circle.progress {
             fill: none;
             stroke: #FB5FAB;
@@ -61,6 +74,7 @@ function custom_sale_countdown_timer($atts) {
             stroke-dashoffset: 502;
             transition: stroke-dashoffset 0.5s ease;
         }
+
         .circle-box .number {
             font-weight: bold;
             font-size: 32px;
@@ -71,6 +85,7 @@ function custom_sale_countdown_timer($atts) {
             right: 0;
             font-family: inherit;
         }
+
         .circle-box .label {
             margin-top: 8px;
             font-size: 16px;
@@ -106,7 +121,7 @@ function custom_sale_countdown_timer($atts) {
                 const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                 const s = Math.floor((distance % (1000 * 60)) / 1000);
 
-                const values = { days: d, hours: h, minutes: m, seconds: s };
+                const values = {days: d, hours: h, minutes: m, seconds: s};
 
                 Object.entries(values).forEach(([unit, value]) => {
                     document.getElementById(unit).textContent = String(value).padStart(2, '0');
@@ -117,23 +132,28 @@ function custom_sale_countdown_timer($atts) {
             }
 
             updateTimer();
+
             setInterval(updateTimer, 1000);
+
+
         });
     </script>
-    <?php
-    return ob_get_clean();
+	<?php
+	return ob_get_clean();
 }
+
 add_shortcode('sale_timer', 'custom_sale_countdown_timer');
 
 
 // === Автоматична знижка при купівлі 3+ букетів ===
 add_action('woocommerce_cart_calculate_fees', 'custom_bulk_discount');
-function custom_bulk_discount($cart) {
-    if (is_admin() && !defined('DOING_AJAX')) return;
+function custom_bulk_discount($cart)
+{
+	if (is_admin() && !defined('DOING_AJAX')) return;
 
-    if ($cart->get_cart_contents_count() >= 3) {
-        $discount = $cart->subtotal * 0.10;
-        $cart->add_fee(__('Знижка на обʼємне замовлення'), -$discount);
-    }
+	if ($cart->get_cart_contents_count() >= 3) {
+		$discount = $cart->subtotal * 0.10;
+		$cart->add_fee(__('Знижка на обʼємне замовлення'), -$discount);
+	}
 }
 
