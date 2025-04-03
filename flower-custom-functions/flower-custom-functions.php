@@ -13,147 +13,156 @@
  * @param $atts
  * @return false|string
  */
-function custom_sale_countdown_timer($atts)
-{
-	$atts = shortcode_atts([
-		'end_date' => '',
-	], $atts);
+function custom_sale_countdown_timer( $atts ) {
+	$atts = shortcode_atts(
+		array(
+			'end_date' => '',
+		),
+		$atts
+	);
 
-	if (!$atts['end_date']) {
+	if ( ! $atts['end_date'] ) {
 		return '<p>Кінцева дата акції не вказана.</p>';
 	}
 
-
 	ob_start(); ?>
-    <div id="svg-timer" data-end-date="<?php echo esc_attr($atts['end_date']); ?>">
-		<?php foreach (['days' => 'Дні', 'hours' => 'Години', 'minutes' => 'Хвилини', 'seconds' => 'Секунди'] as $unit => $label): ?>
-            <div class="circle-box">
-                <svg width="180" height="180">
-                    <circle class="bg" cx="90" cy="90" r="80"/>
-                    <circle class="progress" id="circle-<?php echo $unit ?>" cx="90" cy="90" r="80"/>
-                </svg>
-                <div class="number" id="<?php echo $unit ?>">00</div>
-                <div class="label"><?php echo $label ?></div>
-            </div>
+	<div id="svg-timer" data-end-date="<?php echo esc_attr( $atts['end_date'] ); ?>">
+		<?php
+		foreach ( array(
+			'days'    => 'Дні',
+			'hours'   => 'Години',
+			'minutes' => 'Хвилини',
+			'seconds' => 'Секунди',
+		) as $unit => $label ) :
+			?>
+			<div class="circle-box">
+				<svg width="180" height="180">
+					<circle class="bg" cx="90" cy="90" r="80"/>
+					<circle class="progress" id="circle-<?php echo $unit; ?>" cx="90" cy="90" r="80"/>
+				</svg>
+				<div class="number" id="<?php echo $unit; ?>">00</div>
+				<div class="label"><?php echo $label; ?></div>
+			</div>
 		<?php endforeach; ?>
 
-    </div>
-    <style>
-        #svg-timer {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin: 40px 0;
-            flex-wrap: wrap;
-            transform: scale(1.3); /* ~3x */
-        }
+	</div>
+	<style>
+		#svg-timer {
+			display: flex;
+			justify-content: center;
+			gap: 40px;
+			margin: 40px 0;
+			flex-wrap: wrap;
+			transform: scale(1.3); /* ~3x */
+		}
 
-        .circle-box {
-            position: relative;
-            width: 180px;
-            height: 180px;
-            text-align: center;
-        }
+		.circle-box {
+			position: relative;
+			width: 180px;
+			height: 180px;
+			text-align: center;
+		}
 
-        svg {
-            transform: rotate(-90deg);
-        }
+		svg {
+			transform: rotate(-90deg);
+		}
 
-        circle.bg {
-            fill: none;
-            stroke: #FCEEF5;
-            stroke-width: 10;
-        }
+		circle.bg {
+			fill: none;
+			stroke: #FCEEF5;
+			stroke-width: 10;
+		}
 
-        circle.progress {
-            fill: none;
-            stroke: #FB5FAB;
-            stroke-width: 10;
-            stroke-linecap: round;
-            stroke-dasharray: 502;
-            stroke-dashoffset: 502;
-            transition: stroke-dashoffset 0.5s ease;
-        }
+		circle.progress {
+			fill: none;
+			stroke: #FB5FAB;
+			stroke-width: 10;
+			stroke-linecap: round;
+			stroke-dasharray: 502;
+			stroke-dashoffset: 502;
+			transition: stroke-dashoffset 0.5s ease;
+		}
 
-        .circle-box .number {
-            font-weight: bold;
-            font-size: 32px;
-            color: #111111;
-            position: absolute;
-            top: 60px;
-            left: 0;
-            right: 0;
-            font-family: inherit;
-        }
+		.circle-box .number {
+			font-weight: bold;
+			font-size: 32px;
+			color: #111111;
+			position: absolute;
+			top: 60px;
+			left: 0;
+			right: 0;
+			font-family: inherit;
+		}
 
-        .circle-box .label {
-            margin-top: 8px;
-            font-size: 16px;
-            color: #111111;
-            font-family: inherit;
-        }
-    </style>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const container = document.getElementById('svg-timer');
-            if (!container) return;
+		.circle-box .label {
+			margin-top: 8px;
+			font-size: 16px;
+			color: #111111;
+			font-family: inherit;
+		}
+	</style>
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+			const container = document.getElementById('svg-timer');
+			if (!container) return;
 
-            const endDate = new Date(container.getAttribute('data-end-date')).getTime();
+			const endDate = new Date(container.getAttribute('data-end-date')).getTime();
 
-            const total = {
-                days: 365,
-                hours: 24,
-                minutes: 60,
-                seconds: 60
-            };
+			const total = {
+				days: 365,
+				hours: 24,
+				minutes: 60,
+				seconds: 60
+			};
 
-            function updateTimer() {
-                const now = new Date().getTime();
-                const distance = endDate - now;
+			function updateTimer() {
+				const now = new Date().getTime();
+				const distance = endDate - now;
 
-                if (distance <= 0) {
-                    container.innerHTML = "<p>⏰ Акція завершена!</p>";
-                    return;
-                }
+				if (distance <= 0) {
+					container.innerHTML = "<p>⏰ Акція завершена!</p>";
+					return;
+				}
 
-                const d = Math.floor(distance / (1000 * 60 * 60 * 24));
-                const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const s = Math.floor((distance % (1000 * 60)) / 1000);
+				const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+				const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+				const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+				const s = Math.floor((distance % (1000 * 60)) / 1000);
 
-                const values = {days: d, hours: h, minutes: m, seconds: s};
+				const values = {days: d, hours: h, minutes: m, seconds: s};
 
-                Object.entries(values).forEach(([unit, value]) => {
-                    document.getElementById(unit).textContent = String(value).padStart(2, '0');
-                    const circle = document.getElementById('circle-' + unit);
-                    const progress = 502 - (502 * value / total[unit]);
-                    circle.style.strokeDashoffset = progress;
-                });
-            }
+				Object.entries(values).forEach(([unit, value]) => {
+					document.getElementById(unit).textContent = String(value).padStart(2, '0');
+					const circle = document.getElementById('circle-' + unit);
+					const progress = 502 - (502 * value / total[unit]);
+					circle.style.strokeDashoffset = progress;
+				});
+			}
 
-            updateTimer();
+			updateTimer();
 
-            setInterval(updateTimer, 1000);
+			setInterval(updateTimer, 1000);
 
 
-        });
-    </script>
+		});
+	</script>
 	<?php
 	return ob_get_clean();
 }
 
-add_shortcode('sale_timer', 'custom_sale_countdown_timer');
+add_shortcode( 'sale_timer', 'custom_sale_countdown_timer' );
 
 
 // === Автоматична знижка при купівлі 3+ букетів ===
-add_action('woocommerce_cart_calculate_fees', 'custom_bulk_discount');
-function custom_bulk_discount($cart)
-{
-	if (is_admin() && !defined('DOING_AJAX')) return;
+add_action( 'woocommerce_cart_calculate_fees', 'custom_bulk_discount' );
+function custom_bulk_discount( $cart ) {
+	if ( is_admin() && ! defined( 'DOING_AJAX' ) ) {
+		return;
+	}
 
-	if ($cart->get_cart_contents_count() >= 3) {
+	if ( $cart->get_cart_contents_count() >= 3 ) {
 		$discount = $cart->subtotal * 0.10;
-		$cart->add_fee(__('Знижка на обʼємне замовлення'), -$discount);
+		$cart->add_fee( __( 'Знижка на обʼємне замовлення' ), -$discount );
 	}
 }
 
