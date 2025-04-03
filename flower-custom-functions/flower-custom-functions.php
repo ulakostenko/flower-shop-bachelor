@@ -1,5 +1,7 @@
 <?php
 /**
+ *  Основні функції плагіна для таймера та знижки.
+ *
  * @package Wordpress_Custom_Plugin
  * Plugin Name: Flower Shop – Custom Functions
  * Description: Кастомні функції для інтернет-магазину квітів.
@@ -8,10 +10,10 @@
  */
 
 /**
- * Таймер до кінця акції
+ * Показує SVG-таймер до кінця акції.
  *
- * @param $atts
- * @return false|string
+ * @param array $atts Атрибути шорткоду.
+ * @return string HTML таймера або повідомлення.
  */
 function custom_sale_countdown_timer( $atts ) {
 	$atts = shortcode_atts(
@@ -38,10 +40,10 @@ function custom_sale_countdown_timer( $atts ) {
 			<div class="circle-box">
 				<svg width="180" height="180">
 					<circle class="bg" cx="90" cy="90" r="80"/>
-					<circle class="progress" id="circle-<?php echo $unit; ?>" cx="90" cy="90" r="80"/>
+					<circle class="progress" id="circle-<?php echo esc_attr( $unit ); ?>" cx="90" cy="90" r="80"/>
 				</svg>
-				<div class="number" id="<?php echo $unit; ?>">00</div>
-				<div class="label"><?php echo $label; ?></div>
+				<div class="number" id="<?php echo esc_attr( $unit ); ?>">00</div>
+				<div class="label"><?php echo esc_html( $label ); ?></div>
 			</div>
 		<?php endforeach; ?>
 
@@ -53,7 +55,7 @@ function custom_sale_countdown_timer( $atts ) {
 			gap: 40px;
 			margin: 40px 0;
 			flex-wrap: wrap;
-			transform: scale(1.3); /* ~3x */
+			transform: scale(1.3);
 		}
 
 		.circle-box {
@@ -153,8 +155,12 @@ function custom_sale_countdown_timer( $atts ) {
 add_shortcode( 'sale_timer', 'custom_sale_countdown_timer' );
 
 
-// === Автоматична знижка при купівлі 3+ букетів ===
-add_action( 'woocommerce_cart_calculate_fees', 'custom_bulk_discount' );
+/**
+ * Знижка при купівлі 3+ букетів.
+ *
+ * @param WC_Cart $cart Кошик покупця.
+ * @return void
+ */
 function custom_bulk_discount( $cart ) {
 	if ( is_admin() && ! defined( 'DOING_AJAX' ) ) {
 		return;
@@ -162,7 +168,8 @@ function custom_bulk_discount( $cart ) {
 
 	if ( $cart->get_cart_contents_count() >= 3 ) {
 		$discount = $cart->subtotal * 0.10;
-		$cart->add_fee( __( 'Знижка на обʼємне замовлення' ), -$discount );
+		$cart->add_fee( __( 'Знижка на обʼємне замовлення', 'flower-shop' ), -$discount );
 	}
 }
 
+add_action( 'woocommerce_cart_calculate_fees', 'custom_bulk_discount' );

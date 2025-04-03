@@ -84,3 +84,58 @@ composer install
 ```
 
 Ця команда автоматично виправить більшість проблем зі стилем коду.
+
+
+## Git Hooks
+
+У проєкті налаштовано `pre-commit` хук, який запускає лінтер перед кожним комітом.
+Якщо у коді знайдено помилки стилю — коміт буде скасовано.
+
+```bash
+#!/bin/sh
+echo "Running phpcs before commit..."
+./vendor/bin/phpcs --standard=WordPress flower-custom-functions/
+
+if [ $? -ne 0 ]; then
+  echo "Linter failed. Commit aborted."
+  exit 1
+fi
+
+echo "Linter passed. Commit allowed."
+```
+
+Цей файл знаходиться у `.git/hooks/pre-commit` і зроблений виконуваним за допомогою:
+
+```bash
+chmod +x .git/hooks/pre-commit
+```
+
+## Інтеграція в процес збірки
+
+У `composer.json` знаходиться скрипт для запуску лінтера вручну:
+
+```bash
+"scripts": {
+  "lint": "phpcs --standard=WordPress flower-custom-functions/",
+  "lint:fix": "phpcbf --standard=WordPress flower-custom-functions/",
+  "check": [
+    "@lint"
+  ]
+}
+```
+
+Перевірити код можна так:
+
+```bash
+composer run check    # перевірка
+composer run lint     # перевірка
+composer run lint:fix # автовиправлення
+```
+
+## Статична типізація (PHPDoc)
+
+PHP не має вбудованої жорсткої типізації, тому використовується PHPDoc:
+
+- кожна функція описана за допомогою `@param`, `@return`
+- дотримуються правил **WordPress PHPDoc**
+- перевіряється наявність коментарів та типів через PHPCS

@@ -19,5 +19,13 @@
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
         }
+    },
+    "scripts": {
+        "lint": "phpcs --standard=WordPress flower-custom-functions/",
+        "lint:fix": "phpcbf --standard=WordPress flower-custom-functions/",
+        "check": [
+            "@lint"
+        ]
     }
+
 }
