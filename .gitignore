@@ -16,3 +16,7 @@ wp-content/cache/
 # OS системні файли
 .DS_Store
 Thumbs.db
+
+# phpDocumentor cache and binary
+phpdoc.phar
+.phpdoc/cache/

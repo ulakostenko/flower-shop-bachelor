@@ -1,31 +1,30 @@
 {
-    "name": "user/flower-shop-bachelor",
-    "autoload": {
-        "psr-4": {
-            "User\\FlowerShopBachelor\\": "src/"
-        }
-    },
-    "authors": [
-        {
-            "name": "ulakostenko",
-            "email": "ulakostenko@gmail.com"
-        }
-    ],
-    "require-dev": {
-        "squizlabs/php_codesniffer": "^3.12",
-        "wp-coding-standards/wpcs": "^3.1"
-    },
-    "config": {
-        "allow-plugins": {
-            "dealerdirect/phpcodesniffer-composer-installer": true
-        }
-    },
-    "scripts": {
-        "lint": "phpcs --standard=WordPress flower-custom-functions/",
-        "lint:fix": "phpcbf --standard=WordPress flower-custom-functions/",
-        "check": [
-            "@lint"
-        ]
+  "name": "user/flower-shop-bachelor",
+  "autoload": {
+    "psr-4": {
+      "User\\FlowerShopBachelor\\": "src/"
     }
-
+  },
+  "authors": [
+    {
+      "name": "ulakostenko",
+      "email": "ulakostenko@gmail.com"
+    }
+  ],
+  "require-dev": {
+    "squizlabs/php_codesniffer": "^3.12",
+    "wp-coding-standards/wpcs": "^3.1"
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  },
+  "scripts": {
+    "lint": "phpcs --standard=WordPress flower-custom-functions/",
+    "lint:fix": "phpcbf --standard=WordPress flower-custom-functions/",
+    "check": [
+      "@lint"
+    ]
+  }
 }

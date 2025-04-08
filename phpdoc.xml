@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<phpdocumentor configVersion="3">
+
+    <title>Flower Shop Plugin Documentation</title>
+
+    <paths>
+        <output>docs/phpdocs</output>
+    </paths>
+
+    <settings>
+        <visibility>
+            <value>public</value>
+        </visibility>
+    </settings>
+
+    <templates>
+        <template name="default" />
+    </templates>
+
+</phpdocumentor>

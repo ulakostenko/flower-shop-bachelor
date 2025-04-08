@@ -3,10 +3,10 @@
  *  Основні функції плагіна для таймера та знижки.
  *
  * @package Wordpress_Custom_Plugin
- * Plugin Name: Flower Shop – Custom Functions
- * Description: Кастомні функції для інтернет-магазину квітів.
- * Version: 1.0
- * Author: Костенко Юлія
+ * @pluginName Flower Shop – Custom Functions
+ * @description Кастомні функції для інтернет-магазину квітів.
+ * @version 1.0
+ * @author Костенко Юлія
  */
 
 /**
