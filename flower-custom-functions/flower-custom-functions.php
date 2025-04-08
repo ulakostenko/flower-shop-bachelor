@@ -152,7 +152,11 @@ function custom_sale_countdown_timer( $atts ) {
 	return ob_get_clean();
 }
 
+/**
+ * Реєстрація шорткоду для виводу таймера
+ */
 add_shortcode( 'sale_timer', 'custom_sale_countdown_timer' );
+
 
 
 /**
@@ -172,4 +176,7 @@ function custom_bulk_discount( $cart ) {
 	}
 }
 
+/**
+ * Реєстрація знижки на кошик під час обчислення вартості
+ */
 add_action( 'woocommerce_cart_calculate_fees', 'custom_bulk_discount' );
