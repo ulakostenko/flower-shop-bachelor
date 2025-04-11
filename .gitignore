@@ -17,6 +17,5 @@ wp-content/cache/
 .DS_Store
 Thumbs.db
 
-# phpDocumentor cache and binary
-phpdoc.phar
+# phpDocumentor cache
 .phpdoc/cache/
