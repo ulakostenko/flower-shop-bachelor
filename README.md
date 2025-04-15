@@ -203,10 +203,126 @@ echo "Linter passed. Documentation generated. Commit allowed."
 
 ![img_2.png](docs/img_2.png)
 
+## 📄 Інструкція для нового розробника
+
+Ця інструкція дозволяє повністю розгорнути проєкт "Інтернет-магазин квітів" локально на іншому комп’ютері з нуля,
+включаючи WordPress, базу даних і кастомний плагін.
+
+---
+
+### 1. Необхідні залежності та програмне забезпечення
+
+| Компонент                | Версія / Опис                             | Джерело                                     |
+|--------------------------|-------------------------------------------|---------------------------------------------|
+| OSPanel                  | Локальний веб-сервер з Apache, PHP, MySQL | [ospanel.io](https://ospanel.io/)           |
+| PHP                      | >=7.4                                     | (входить до OSPanel)                        |
+| MySQL                    | >=5.7                                     | (входить до OSPanel)                        |
+| WordPress                | Актуальна версія                          | [wordpress.org](https://wordpress.org/)     |
+| Git                      | Для клонування репозиторію                | [git-scm.com](https://git-scm.com/)         |
+| Composer (опціонально)   | Для запуску лінтера та phpDocumentor      | [getcomposer.org](https://getcomposer.org/) |
+| IntelliJ IDEA / PhpStorm | IDE для редагування коду PHP              | [jetbrains.com](https://www.jetbrains.com/) |
+
+---
+
+### 2. Експортування сайту з локального комп'ютера
+
+#### 2.1 Архівація файлів WordPress
+
+1. Перейдіть у теку сайту WordPress, наприклад:  
+   `D:\SumDU\OSPanel\OSPanel\domains\FlowersStore\`
+
+2. Створіть архів усіх файлів сайту (ZIP або RAR).  
+   Обов'язково перевірте наявність кастомного плагіна в шляху:
+   `wp-content/plugins/flower-custom-functions`
+
+#### 2.2 Експорт бази даних
+
+1. Відкрийте PhpMyAdmin:  
+   [http://localhost/phpmyadmin](http://localhost/phpmyadmin)
+
+2. Оберіть базу `flower_shop_db`, перейдіть у вкладку **Експорт**, оберіть формат `SQL` та збережіть файл:
+   `flower_shop_db.sql`
+
+---
+
+### 3. Імпортування сайту на інший комп’ютер
+
+#### 3.1 Встановлення середовища
+
+- Встановіть OSPanel або інший локальний сервер.
+- Створіть порожню теку `FlowersStore` у:
+  `…\OSPanel\domains\`
+
+#### 3.2 Розпакування архіву
+
+- Розпакуйте архів сайту WordPress у теку `FlowersStore`.
+
+#### 3.3 Імпорт бази даних
+
+- Через PhpMyAdmin створіть нову базу: `flower_shop_db`
+- Імпортуйте файл `flower_shop_db.sql`
+
+#### 3.4 Налаштування wp-config.php
+
+Відредагуйте файл `wp-config.php` у корені WordPress:
+
+```php
+define('DB_NAME', 'flower_shop_db');
+define('DB_USER', 'root');
+define('DB_PASSWORD', '');
+define('DB_HOST', 'localhost');
+```
+
+---
+
+### 4. Запуск сайту
+
+1. Запустіть OSPanel (увімкніть Apache + MySQL).
+
+2. Відкрийте браузер та перейдіть за адресою:
+   http://flowersstore:8080/
+
+3. Увійдіть в адмін-панель WordPress:
+   http://flowersstore:8080/wp-admin/
+
+4. Авторизуйтесь як адміністратор.
+
+---
+
+### 5. Робота над кастомними плагінами
+
+#### 5.1 Запуск IDE
+
+1. Відкрийте IntelliJ IDEA або PhpStorm.
+2. Клонуйте репозиторій плагіна:
+
+`git clone https://github.com/ulakostenko/flower-custom-functions.git`
+
+#### 5.2 Робота з кодом
+
+- Відкрийте проєкт у IDE.
+- Внесіть зміни у код у директорії `flower-custom-functions/`.
+
+#### 5.3 Документація
+
+Генерація документації з PHPDoc:
+`composer run docs`
+
+#### 5.4 Перевірка якості коду
+
+Запуск лінтера:
+`composer run check`
+
+**✅ Готово! Середовище повністю готове для розробки, тестування та підтримки**
+
+---
+
 ## 👤 Автор
 
 **Юлія Костенко, Сумський державний університет**  
 Бакалаврська робота, 2025
+
+---
 
 ## 📬 Контакти
 
