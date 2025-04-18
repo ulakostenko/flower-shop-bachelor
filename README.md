@@ -90,15 +90,47 @@ composer run lint:fix # автовиправлення
   function custom_bulk_discount( $cart ) { ... }
 ```
 
-#### Інтеграція генерації документації у процес збірки
+#### Автоматичний переклад коментарів
+
+Для підтримки англійської версії документації реалізовано Python-скрипт `translate_phpdoc.py`, який автоматично
+перекладає
+PHPDoc-коментарі з української на англійську. Він створює англомовну версію файлу (`flower-custom-functions-en.php`) на
+основі оригінального (`flower-custom-functions.php`).
+
+#### Генерація багатомовної документації
+
+Документація автоматично створюється у двох версіях:
+
+* українською: `docs/phpdocs/uk/index.html`
+* англійською: `docs/phpdocs/en/index.html`
+
+Конфігурація здійснюється через окремі файли:
+
+`phpdoc.uk.xml` — для української версії
+`phpdoc.en.xml` — для англійської версії
+
+Додано скрипти в `composer.json`:
+
+```bash
+"scripts": {
+"docs:uk": "php phpdoc.phar -d flower-custom-functions/flower-custom-functions.php -c phpdoc.uk.xml",
+"docs:en": "php phpdoc.phar -d flower-custom-functions/flower-custom-functions-en.php -c phpdoc.en.xml",
+"docs:all": [
+"@docs:uk",
+"@docs:en"
+]
+}
+```
+
+#### Інтеграція з процесом коміту
 
 Автоматична генерація HTML-документації реалізована через `pre-commit hook`.
-При кожному коміті в репозиторій відбувається:
+Після кожного коміту виконується:
 
-1. Перевірка коду лінтером PHP_CodeSniffer.
-2. У разі успішної перевірки автоматично запускається генерація документації через phpDocumentor.
-3. Новостворена документація зберігається у директорії `docs/phpdocs/`.
-4. Коміт завершується тільки після успішної генерації документації.
+1. Лінтинг коду через PHP_CodeSniffer.
+2. Автоматичний переклад PHPDoc-коментарів (у разі успіху лінтингу).
+3. Генерація документації українською та англійською.
+4. Завершення коміту тільки у випадку успішного проходження всіх кроків.
 
 Файл `.git/hooks/pre-commit`:
 
@@ -112,14 +144,30 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-echo "Generating documentation..."
-php phpdoc.phar -d flower-custom-functions -c phpdoc.xml
+echo "Linter passed."
 
-echo "Linter passed. Documentation generated. Commit allowed."
+echo "Running translation script (UA to EN)..."
+python translate_phpdoc.py
+
+if [ $? -ne 0 ]; then
+  echo "Translation script failed. Commit aborted."
+  exit 1
+fi
+
+echo "Translation completed."
+
+echo "Generating documentation (UK and EN)..."
+composer run docs:all
+
+if [ $? -ne 0 ]; then
+  echo "Documentation generation failed. Commit aborted."
+  exit 1
+fi
+
+echo "Documentation successfully generated. Commit allowed."
 ```
 
-Згенерована документація доступна у папці: `docs/phpdocs/index.html`. Це дозволяє підтримувати документацію актуальною
-без ручного запуску генерації.
+Головна сторінка `docs/index.html` містить кнопки для вибору мови перегляду документації.
 
 ### 5. Архітектурні рішення
 

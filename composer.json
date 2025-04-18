@@ -25,6 +25,13 @@
     "lint:fix": "phpcbf --standard=WordPress flower-custom-functions/",
     "check": [
       "@lint"
+    ],
+    "docs:en": "php phpdoc.phar -d flower-custom-functions/flower-custom-functions-en.php -c phpdoc.en.xml",
+    "docs:uk": "php phpdoc.phar -d flower-custom-functions/flower-custom-functions.php -c phpdoc.uk.xml",
+    "docs:all": [
+      "@docs:uk",
+      "@docs:en"
     ]
   }
+
 }
